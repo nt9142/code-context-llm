@@ -18,8 +18,4 @@ export const DEFAULT_SKIP_FILES = [
   '__pycache__',
 ];
 
-// Token pattern (simplistic placeholder regex) used to redact sensitive info
-export const TOKEN_PATTERN =
-  /([A-Za-z0-9_-]*token[A-Za-z0-9_-]*|"[^"]*"?token"[^"]*")/gi;
-
 export const CODE_BLOCK_DELIMITER = '```';

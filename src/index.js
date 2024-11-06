@@ -5,7 +5,10 @@ import path from 'path';
 import inquirer from 'inquirer';
 import ignore from 'ignore';
 import { program } from 'commander';
-import { countFilesAndDirectories, getDirectoryStructure } from './utils.js';
+import {
+  countFilesAndDirectories,
+  getDirectoryStructure,
+} from './utils/index.js';
 import { DEFAULT_SKIP_DIRECTORIES, DEFAULT_SKIP_FILES } from './constants.js';
 
 const prompt = inquirer.createPromptModule();

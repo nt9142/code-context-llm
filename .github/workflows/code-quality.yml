@@ -1,4 +1,4 @@
-name: Code Quality
+name: Code Quality & Tests
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   quality:
-    name: Code Quality
+    name: Code Quality & Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -35,12 +35,21 @@ jobs:
       - name: Run linter
         run: npm run lint
 
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage/
+
       - name: Report status
         if: always()
         run: |
           if [ ${{ job.status }} == 'success' ]; then
-            echo "✅ All code quality checks passed!"
+            echo "✅ All code quality checks and tests passed!"
           else
-            echo "❌ Some code quality checks failed. Please review the logs above."
+            echo "❌ Some checks failed. Please review the logs above."
             exit 1
           fi

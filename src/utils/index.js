@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import { isBinaryFileSync } from 'isbinaryfile';
-import { TOKEN_PATTERN, CODE_BLOCK_DELIMITER } from './constants.js';
+import { CODE_BLOCK_DELIMITER } from '../constants.js';
+import { sanitizeContent } from './sanitize-content.js';
 
 // Utility: Recursively gather file structure
 export function getDirectoryStructure(
@@ -62,7 +63,7 @@ export function tryReadFileContent(filePath) {
     }
     const content = fs.readFileSync(filePath, 'utf8');
     // If tokens found, replace them
-    const sanitizedContent = content.replace(TOKEN_PATTERN, '[REDACTED]');
+    const sanitizedContent = sanitizeContent(content);
     return sanitizedContent;
   } catch (error) {
     // Possibly a binary file or an error reading it
