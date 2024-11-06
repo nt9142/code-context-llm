@@ -1,7 +1,9 @@
-// Token pattern (simplistic placeholder regex) used to redact sensitive info
 export const TOKEN_PATTERN =
-  /([A-Za-z0-9_-]*token[A-Za-z0-9_-]*|"[^"]*"?token"[^"]*")/gi;
+  /(["']?\w*(?:token|key)\w*["']?\s*[:=]\s*)(["'])(?:(?!\2).)*\2/gi;
 
 export function sanitizeContent(content) {
-  return content.replace(TOKEN_PATTERN, '[REDACTED]');
+  if (!content) {
+    return '';
+  }
+  return content.replace(TOKEN_PATTERN, '$1$2[REDACTED]$2');
 }
