@@ -1,0 +1,33 @@
+{
+  "env": {
+    "node": true,
+    "es2024": true
+  },
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "rules": {
+    // Essential rules for catching undefined vars/functions
+    "no-undef": "error",
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ],
+
+    // Modern JS practices
+    "no-var": "error",
+    "prefer-const": "error",
+
+    // Allow console for CLI tool
+    "no-console": [
+      "error",
+      {
+        "allow": ["log", "error", "warn"]
+      }
+    ]
+  }
+}
