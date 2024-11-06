@@ -9,6 +9,8 @@
 
 Generate a **Markdown** representation of your project's file structure to provide valuable context for **Large Language Models (LLMs)** like ChatGPT, enhancing code analysis, prompt engineering, and AI-driven development.
 
+Quick start: `npx code-context-llm`
+
 ## Table of Contents
 
 - [Introduction](#introduction)
