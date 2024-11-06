@@ -1,0 +1,31 @@
+{
+  "name": "code-context-llm",
+  "version": "1.0.0",
+  "description": "Generates a Markdown representation of a project's file structure for LLM context.",
+  "main": "codeContextLLM.js",
+  "bin": {
+    "code-context-llm": "./codeContextLLM.js"
+  },
+  "scripts": {
+    "start": "node codeContextLLM.js"
+  },
+  "keywords": [
+    "llm",
+    "code",
+    "context",
+    "markdown",
+    "generator",
+    "prompt engineering",
+    "ai",
+    "machine learning",
+    "code summarization"
+  ],
+  "author": "Nik Barabanov <nt9142@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.1.0",
+    "ignore": "^6.0.2",
+    "inquirer": "^12.0.1",
+    "isbinaryfile": "^5.0.4"
+  }
+}
