@@ -28,6 +28,10 @@
     "machine learning",
     "code summarization"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nt9142/code-context-llm.git"
+  },
   "author": "Nik Barabanov <nt9142@gmail.com>",
   "license": "MIT",
   "dependencies": {
