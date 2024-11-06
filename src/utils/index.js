@@ -9,7 +9,8 @@ export function getDirectoryStructure(
   dirPath,
   ig,
   writeStream,
-  indentLevel = 0
+  indentLevel = 0,
+  rootDir = dirPath
 ) {
   const entries = fs.readdirSync(dirPath, { withFileTypes: true });
 
@@ -22,7 +23,8 @@ export function getDirectoryStructure(
 
   for (const entry of entries) {
     const entryPath = path.join(dirPath, entry.name);
-    const relativeEntryPath = path.relative(process.cwd(), entryPath);
+    // const relativeEntryPath = path.relative(process.cwd(), entryPath);
+    const relativeEntryPath = path.relative(rootDir, entryPath);
 
     // Skip if the entry matches .gitignore patterns
     if (ig.ignores(relativeEntryPath)) {
@@ -33,7 +35,13 @@ export function getDirectoryStructure(
 
     if (entry.isDirectory()) {
       writeStream.write(`${indent}- **${entry.name}/**\n`);
-      getDirectoryStructure(entryPath, ig, writeStream, indentLevel + 1);
+      getDirectoryStructure(
+        entryPath,
+        ig,
+        writeStream,
+        indentLevel + 1,
+        rootDir
+      );
     } else if (entry.isFile()) {
       const fileSize = fs.statSync(entryPath).size;
       const fileContent = tryReadFileContent(entryPath);
@@ -77,7 +85,7 @@ export function sanitizeCodeBlockDelimiters(content) {
 }
 
 // Utility: Recursively count files and directories for size confirmation
-export function countFilesAndDirectories(dirPath, ig) {
+export function countFilesAndDirectories(dirPath, ig, rootDir = dirPath) {
   let directoriesCount = 0;
   let filesCount = 0;
 
@@ -85,7 +93,7 @@ export function countFilesAndDirectories(dirPath, ig) {
     const entries = fs.readdirSync(dir, { withFileTypes: true });
     for (const entry of entries) {
       const entryPath = path.join(dir, entry.name);
-      const relativeEntryPath = path.relative(process.cwd(), entryPath);
+      const relativeEntryPath = path.relative(rootDir, entryPath);
 
       // Skip if the entry matches .gitignore patterns
       if (ig.ignores(relativeEntryPath)) {
