@@ -56,7 +56,7 @@ const options = program.opts();
         type: 'input',
         name: 'projectPath',
         message: 'Please provide the path to the project directory:',
-        default: '.',
+        default: process.cwd(),
         validate: (input) => {
           const resolved = path.resolve(input);
           return fs.existsSync(resolved) || 'The provided path does not exist.';
