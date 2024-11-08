@@ -18,6 +18,7 @@ export const DEFAULT_SKIP_FILES = [
   '__pycache__',
   'poetry.lock',
   'yarn.lock',
+  'pnpm-lock.yaml',
 ];
 
 export const CODE_BLOCK_DELIMITER = '```';
