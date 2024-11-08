@@ -24,6 +24,14 @@ program
   )
   .option('--skip-dirs <dirs>', 'Comma-separated directories to skip', '')
   .option('--skip-files <files>', 'Comma-separated files to skip', '')
+  .option(
+    '--include-pattern <pattern>',
+    'Glob pattern to include files or directories'
+  )
+  .option(
+    '--exclude-pattern <pattern>',
+    'Glob pattern to exclude files or directories'
+  )
   .parse(process.argv);
 
 // Extract options
@@ -35,18 +43,20 @@ const options = program.opts();
 
   let projectPath = options.projectPath;
   let outputFileName = options.outputFile;
-  let additionalSkipDirs = options.skipDirs
+  const additionalSkipDirs = options.skipDirs
     ? options.skipDirs
         .split(',')
         .map((d) => d.trim())
         .filter(Boolean)
     : [];
-  let additionalSkipFiles = options.skipFiles
+  const additionalSkipFiles = options.skipFiles
     ? options.skipFiles
         .split(',')
         .map((f) => f.trim())
         .filter(Boolean)
     : [];
+  let includePattern = options.includePattern || '';
+  let excludePattern = options.excludePattern || '';
 
   // If options are not provided, prompt the user interactively
   if (!process.argv.slice(2).length) {
@@ -62,52 +72,18 @@ const options = program.opts();
           return fs.existsSync(resolved) || 'The provided path does not exist.';
         },
       },
-    ];
-
-    const { projectPath: interactiveProjectPath } =
-      await prompt(initialQuestions);
-    projectPath = interactiveProjectPath;
-
-    console.log(
-      `\nDefault directories to skip: ${DEFAULT_SKIP_DIRECTORIES.join(', ')}`
-    );
-    console.log(`Default files to skip: ${DEFAULT_SKIP_FILES.join(', ')}\n`);
-
-    const skipQuestions = [
       {
         type: 'input',
-        name: 'additionalSkipDirs',
+        name: 'includePattern',
         message:
-          'Enter any additional directories to skip (comma-separated, leave blank to skip):',
-        filter: (val) =>
-          val
-            .split(',')
-            .map((d) => d.trim())
-            .filter(Boolean),
+          'Enter a glob pattern to include files/directories (leave blank to include all):',
       },
       {
         type: 'input',
-        name: 'additionalSkipFiles',
+        name: 'excludePattern',
         message:
-          'Enter any additional files to skip (comma-separated, leave blank to skip):',
-        filter: (val) =>
-          val
-            .split(',')
-            .map((f) => f.trim())
-            .filter(Boolean),
+          'Enter a glob pattern to exclude files/directories (leave blank to exclude none):',
       },
-    ];
-
-    const {
-      additionalSkipDirs: interactiveSkipDirs,
-      additionalSkipFiles: interactiveSkipFiles,
-    } = await prompt(skipQuestions);
-
-    additionalSkipDirs = interactiveSkipDirs;
-    additionalSkipFiles = interactiveSkipFiles;
-
-    // Prompt for output file name
-    const outputQuestion = [
       {
         type: 'input',
         name: 'outputFileName',
@@ -117,9 +93,11 @@ const options = program.opts();
       },
     ];
 
-    const { outputFileName: interactiveOutputFileName } =
-      await prompt(outputQuestion);
-    outputFileName = interactiveOutputFileName;
+    const responses = await prompt(initialQuestions);
+    projectPath = responses.projectPath;
+    includePattern = responses.includePattern || '';
+    excludePattern = responses.excludePattern || '';
+    outputFileName = responses.outputFileName;
   }
 
   // Validate project path
@@ -143,7 +121,7 @@ const options = program.opts();
   ig.add(DEFAULT_SKIP_DIRECTORIES.map((dir) => `/${dir}/`));
   ig.add(DEFAULT_SKIP_FILES.map((file) => `/${file}`));
 
-  // Add additional skips from user input or command-line options
+  // Add additional skips from command-line options
   ig.add(additionalSkipDirs.map((dir) => `/${dir}/`));
   ig.add(additionalSkipFiles.map((file) => `/${file}`));
 
@@ -155,7 +133,12 @@ const options = program.opts();
   console.log('\nAnalyzing project size...');
 
   // Count files and directories
-  const { directories, files } = countFilesAndDirectories(resolvedPath, ig);
+  const { directories, files } = countFilesAndDirectories(
+    resolvedPath,
+    ig,
+    includePattern,
+    excludePattern
+  );
   console.log(
     `Found ${directories} directories and ${files} files to process.\n`
   );
@@ -230,7 +213,15 @@ const options = program.opts();
 
   // Start generating structure
   try {
-    getDirectoryStructure(resolvedPath, ig, writeStream);
+    getDirectoryStructure(
+      resolvedPath,
+      ig,
+      writeStream,
+      0,
+      resolvedPath,
+      includePattern,
+      excludePattern
+    );
     writeStream.end();
   } catch (error) {
     console.error(`Failed to process directory: ${error.message}`);

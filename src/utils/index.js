@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { isBinaryFileSync } from 'isbinaryfile';
+import { minimatch } from 'minimatch';
 import { CODE_BLOCK_DELIMITER } from '../constants.js';
 import { sanitizeContent } from './sanitize-content.js';
 
@@ -10,7 +11,9 @@ export function getDirectoryStructure(
   ig,
   writeStream,
   indentLevel = 0,
-  rootDir = dirPath
+  rootDir = dirPath,
+  includePattern = '',
+  excludePattern = ''
 ) {
   const entries = fs.readdirSync(dirPath, { withFileTypes: true });
 
@@ -23,7 +26,6 @@ export function getDirectoryStructure(
 
   for (const entry of entries) {
     const entryPath = path.join(dirPath, entry.name);
-    // const relativeEntryPath = path.relative(process.cwd(), entryPath);
     const relativeEntryPath = path.relative(rootDir, entryPath);
 
     // Skip if the entry matches .gitignore patterns
@@ -31,22 +33,43 @@ export function getDirectoryStructure(
       continue;
     }
 
+    // Apply exclude pattern
+    if (
+      excludePattern &&
+      minimatch(relativeEntryPath, excludePattern, { dot: true })
+    ) {
+      continue;
+    }
+
     const indent = '  '.repeat(indentLevel);
 
     if (entry.isDirectory()) {
       writeStream.write(`${indent}- **${entry.name}/**\n`);
+      // Continue traversing the directory regardless of includePattern
       getDirectoryStructure(
         entryPath,
         ig,
         writeStream,
         indentLevel + 1,
-        rootDir
+        rootDir,
+        includePattern,
+        excludePattern
       );
     } else if (entry.isFile()) {
+      // Apply include pattern only to files
+      if (
+        includePattern &&
+        !minimatch(relativeEntryPath, includePattern, { dot: true })
+      ) {
+        continue;
+      }
+
       const fileSize = fs.statSync(entryPath).size;
       const fileContent = tryReadFileContent(entryPath);
       writeStream.write(
-        `${indent}- ${entry.name} ${fileSize > 0 ? `(${fileSize} bytes)` : ''}\n`
+        `${indent}- ${entry.name} ${
+          fileSize > 0 ? `(${fileSize} bytes)` : ''
+        }\n`
       );
       if (fileContent && fileContent.length > 0) {
         const sanitizedContent = sanitizeCodeBlockDelimiters(fileContent);
@@ -85,7 +108,13 @@ export function sanitizeCodeBlockDelimiters(content) {
 }
 
 // Utility: Recursively count files and directories for size confirmation
-export function countFilesAndDirectories(dirPath, ig, rootDir = dirPath) {
+export function countFilesAndDirectories(
+  dirPath,
+  ig,
+  includePattern = '',
+  excludePattern = '',
+  rootDir = dirPath
+) {
   let directoriesCount = 0;
   let filesCount = 0;
 
@@ -100,10 +129,26 @@ export function countFilesAndDirectories(dirPath, ig, rootDir = dirPath) {
         continue;
       }
 
+      // Apply exclude pattern
+      if (
+        excludePattern &&
+        minimatch(relativeEntryPath, excludePattern, { dot: true })
+      ) {
+        continue;
+      }
+
       if (entry.isDirectory()) {
         directoriesCount += 1;
+        // Continue traversing the directory regardless of includePattern
         count(entryPath);
       } else if (entry.isFile()) {
+        // Apply include pattern only to files
+        if (
+          includePattern &&
+          !minimatch(relativeEntryPath, includePattern, { dot: true })
+        ) {
+          continue;
+        }
         filesCount += 1;
       }
     }

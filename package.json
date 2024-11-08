@@ -38,7 +38,8 @@
     "commander": "^12.1.0",
     "ignore": "^6.0.2",
     "inquirer": "^9.2.15",
-    "isbinaryfile": "^5.0.4"
+    "isbinaryfile": "^5.0.4",
+    "minimatch": "^10.0.1"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^2.1.4",
