@@ -16,6 +16,8 @@ export const DEFAULT_SKIP_FILES = [
   '.gitignore',
   '.DS_Store',
   '__pycache__',
+  'poetry.lock',
+  'yarn.lock',
 ];
 
 export const CODE_BLOCK_DELIMITER = '```';
