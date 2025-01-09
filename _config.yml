@@ -2,7 +2,7 @@
 
 title: Code Context LLM
 description: "Code Context LLM is a tool that generates a comprehensive Markdown representation of your project's file structure, enhancing code analysis, prompt engineering, and AI-driven development for Large Language Models (LLMs) like ChatGPT."
-theme: jekyll-theme-tactile
+theme: jekyll-theme-hacker
 show_downloads: true
 google_analytics: YOUR_GOOGLE_ANALYTICS_TRACKING_ID # Replace with your GA ID if available
 
