@@ -1,0 +1,36 @@
+# _config.yml
+
+title: Code Context LLM
+description: "Code Context LLM is a tool that generates a comprehensive Markdown representation of your project's file structure, enhancing code analysis, prompt engineering, and AI-driven development for Large Language Models (LLMs) like ChatGPT."
+theme: jekyll-theme-cayman
+show_downloads: true
+google_analytics: YOUR_GOOGLE_ANALYTICS_TRACKING_ID # Replace with your GA ID if available
+
+# Repository Information
+repository: https://github.com/nt9142/code-context-llm
+
+# Author Information
+author:
+  name: Nik Barabanov
+  email: nt9142@gmail.com
+
+# Navigation (Optional)
+navigation:
+  - title: Home
+    url: /
+  - title: Features
+    url: /#features
+  - title: Installation
+    url: /#installation
+  - title: Usage
+    url: /#usage
+  - title: Contributing
+    url: /#contributing
+
+# Optional Customizations
+sass:
+  style: compressed
+
+# Plugins (If Needed and Supported)
+plugins:
+  # - jekyll-seo-tag

@@ -6,6 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Downloads](https://img.shields.io/npm/dt/code-context-llm.svg)](https://www.npmjs.com/package/code-context-llm)
 ![Cross-Platform](https://img.shields.io/badge/platform-win%20|%20macos%20|%20linux-informational)
+[![GitHub Repository](https://img.shields.io/github/v/release/nt9142/code-context-llm.svg)](https://github.com/nt9142/code-context-llm)
 
 Generate a **Markdown** representation of your project's file structure to provide valuable context for **Large Language Models (LLMs)** like ChatGPT, enhancing code analysis, prompt engineering, and AI-driven development.
 
