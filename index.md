@@ -1,5 +1,3 @@
-![Code Context LLM visualization](assets/hero.png)
-
 # Code Context LLM
 
 [![npm version](https://img.shields.io/npm/v/code-context-llm.svg)](https://www.npmjs.com/package/code-context-llm)
