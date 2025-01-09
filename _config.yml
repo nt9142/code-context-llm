@@ -33,4 +33,5 @@ sass:
 
 # Plugins (If Needed and Supported)
 plugins:
-  # - jekyll-seo-tag
+  - jekyll-seo-tag
+  - jekyll-sitemap
