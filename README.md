@@ -81,10 +81,15 @@ You'll be guided through:
 Keyboard controls:
 
 - ↑/↓: Move cursor
+- ←/→: Collapse/Expand directories
 - Space: Toggle selection
 - a: Toggle select all
 - Enter: Continue/confirm
 - q or Esc: Quit
+
+Notes:
+
+- Dot-prefixed files and directories are excluded by default, but you can include them during the review step.
 
 ### Command-Line Options
 
