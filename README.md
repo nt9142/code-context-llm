@@ -40,8 +40,8 @@ By generating a comprehensive **Markdown** outline of your project's directory t
 - 🔒 **Secure Content Redaction**: Automatically redacts sensitive information like API keys, passwords, and credentials, allowing safe sharing of project structures. [Learn more about our security measures](#security).
 - 🧠 **LLM Context Generation**: Provides accurate project context for improved LLM prompts, enhancing AI responses.
 - 📂 **Respects `.gitignore`**: Excludes files and directories specified in your `.gitignore`, keeping your context clean.
-- ⚙️ **Interactive & Non-Interactive Modes**: Choose between user-friendly prompts or command-line options for flexibility.
-- 🎯 **Customizable Exclusions**: Specify additional files or directories to skip, tailoring the output to your needs.
+- 🖥️ **Interactive React Ink UI**: A keyboard-driven terminal UI for selecting folders and reviewing exclusions.
+- 🎯 **Override Exclusions**: Review items excluded by `.gitignore` or defaults and include them selectively.
 - 📝 **Markdown Output**: Produces a readable and structured Markdown file for easy sharing and documentation.
 
 ## Installation
@@ -64,7 +64,7 @@ npm install -g code-context-llm
 
 ## Usage
 
-### Interactive Mode
+### Interactive Mode (React Ink)
 
 Run:
 
@@ -72,26 +72,27 @@ Run:
 npx code-context-llm
 ```
 
-You'll be guided through prompts to:
+You'll be guided through:
 
-- Provide the project directory path.
-- Specify additional directories or files to skip.
-- Set the output Markdown file name.
+- Selecting which top-level folders to include.
+- Reviewing excluded items (from `.gitignore` and default skips) and choosing any to include.
+- Confirming to generate the Markdown file (default: `ProjectStructure.md`).
 
-### Non-Interactive Mode
+Keyboard controls:
 
-Use command-line options for automation:
-
-```bash
-npx code-context-llm --project-path ./my-project --output-file MyProjectStructure.md --skip-dirs dist,build --skip-files .env
-```
+- ↑/↓: Move cursor
+- Space: Toggle selection
+- a: Toggle select all
+- Enter: Continue/confirm
+- q or Esc: Quit
 
 ### Command-Line Options
 
-- `-p, --project-path <path>`: Path to the project directory (default: `.`).
+- `[root]` (positional): Root directory to process (default: `.`). Examples:
+  - `npx code-context-llm .`
+  - `npx code-context-llm ./some-folder`
 - `-o, --output-file <filename>`: Name of the output Markdown file (default: `ProjectStructure.md`).
-- `--skip-dirs <dirs>`: Comma-separated list of directories to skip.
-- `--skip-files <files>`: Comma-separated list of files to skip.
+- `-p, --project-path <path>`: Deprecated; use the positional `[root]` argument instead.
 - `-h, --help`: Display help information.
 - `-V, --version`: Display the version number.
 
