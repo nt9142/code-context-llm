@@ -400,7 +400,21 @@ export default function App({ rootPath, outputFileName, ig }) {
     return h(
       Box,
       { flexDirection: 'column' },
-      h(Text, null, '📝 Code Context LLM'),
+      h(
+        Box,
+        {
+          borderStyle: 'round',
+          borderColor: 'cyan',
+          paddingX: 1,
+          flexDirection: 'column',
+        },
+        h(Text, { color: 'cyan', bold: true }, 'Code Context LLM'),
+        h(
+          Text,
+          { dimColor: true },
+          'Generate a shareable Markdown overview of your project structure'
+        )
+      ),
       h(Box, { marginTop: 1 }, h(Text, null, `Root: ${rootPath}`)),
       h(TreeList, {
         flatItems: flatItems,

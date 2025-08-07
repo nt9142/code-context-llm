@@ -43,6 +43,12 @@ ig.add(DEFAULT_SKIP_FILES.map((file) => `/${file}`));
 // Ignore dot-prefixed files and directories by default; users can override in review
 ig.add(['.*', '**/.*']);
 
+// Clear the console for a clean UI before rendering (avoid console.* for lint compliance)
+if (process.stdout && process.stdout.isTTY) {
+  // Clear screen, scrollback, and move cursor to top-left
+  process.stdout.write('\x1b[2J\x1b[3J\x1b[H');
+}
+
 render(
   React.createElement(App, {
     rootPath: resolvedPath,
