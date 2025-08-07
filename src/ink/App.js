@@ -339,6 +339,18 @@ export default function App({ rootPath, outputFileName, ig }) {
 
         stream.write(`# Project Structure for ${rootPath}\n\n`);
 
+        // Ensure deselected top-level files are excluded from root files section
+        const deselectedTopLevelFiles = [];
+        for (const [, n] of nodes) {
+          if (!n || n.relPath === '' || n.isDir) continue;
+          if (n.parentRel === '' && n.selection === SEL_NONE) {
+            deselectedTopLevelFiles.push(n.relPath);
+          }
+        }
+        if (deselectedTopLevelFiles.length) {
+          ig.add(deselectedTopLevelFiles.map((p) => `/${p}`));
+        }
+
         // Include root-level non-ignored files first
         setStatus('Writing root files...');
         writeRootFiles(rootPath, ig, stream);

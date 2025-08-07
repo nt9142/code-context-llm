@@ -138,18 +138,28 @@ export function setSelectionForSubtree(map, rel, sel) {
     if (!n || !n.parentRel) return;
     const p = cloneNode(next.get(n.parentRel));
     if (Array.isArray(p.children) && p.children.length) {
+      // Consider only non-dot, non-ignored children when bubbling selection
+      const considered = p.children
+        .map((ch) => next.get(ch))
+        .filter((c) => c && !c.isDot && !c.ignored);
+      if (considered.length === 0) {
+        // No considered children to influence parent's selection; keep as-is
+        next.set(p.relPath, p);
+        bubble(p.relPath);
+        return;
+      }
       let all = 0;
       let none = 0;
-      for (const ch of p.children) {
-        const c = next.get(ch);
-        if (!c) continue;
+      for (const c of considered) {
         if (c.selection === SEL_ALL) all++;
         else if (c.selection === SEL_NONE) none++;
       }
-      const total = p.children.length;
+      const total = considered.length;
       let newSel = SEL_PARTIAL;
       if (all === total) newSel = SEL_ALL;
-      else if (none === total) newSel = SEL_NONE;
+      else if (none === total)
+        // If previously ALL, don't demote all the way to NONE; mark PARTIAL
+        newSel = p.selection === SEL_ALL ? SEL_PARTIAL : SEL_NONE;
       p.selection = newSel;
       next.set(p.relPath, p);
       bubble(p.relPath);
