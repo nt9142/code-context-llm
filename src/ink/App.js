@@ -6,6 +6,8 @@ import {
   getDirectoryStructure,
   tryReadFileContent,
   sanitizeCodeBlockDelimiters,
+  estimateTokensFromText,
+  formatSize,
 } from '../utils/index.js';
 import { TreeList, SelectableList, Instructions } from './components.js';
 import {
@@ -127,9 +129,12 @@ function writeRootFiles(rootPath, ig, writeStream) {
       const stat = fs.statSync(filePath);
       const size = stat.size;
       const content = tryReadFileContent(filePath);
-      writeStream.write(
-        `- ${entry.name} ${size > 0 ? `(${size} bytes)` : ''}\n`
-      );
+      const approxTokens = content
+        ? estimateTokensFromText(content)
+        : Math.round(size / 4);
+      const meta =
+        size > 0 ? `(${formatSize(size)}, ~${approxTokens} tokens)` : '';
+      writeStream.write(`- ${entry.name} ${meta}\n`);
       if (content && content.length > 0) {
         const sanitized = sanitizeCodeBlockDelimiters(content);
         writeStream.write(
@@ -433,6 +438,8 @@ export default function App({ rootPath, outputFileName, ig }) {
         cursorIndex: cursor,
         title: 'Select folders and files to include (←/→ to collapse/expand)',
         emptyText: 'No items found.',
+        rootPath,
+        showSizes: true,
       }),
       h(Instructions, {
         lines: [

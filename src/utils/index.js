@@ -66,11 +66,14 @@ export function getDirectoryStructure(
 
       const fileSize = fs.statSync(entryPath).size;
       const fileContent = tryReadFileContent(entryPath);
-      writeStream.write(
-        `${indent}- ${entry.name} ${
-          fileSize > 0 ? `(${fileSize} bytes)` : ''
-        }\n`
-      );
+      const approxTokens = fileContent
+        ? estimateTokensFromText(fileContent)
+        : Math.round(fileSize / 4);
+      const meta =
+        fileSize > 0
+          ? `(${formatSize(fileSize)}, ~${approxTokens} tokens)`
+          : '';
+      writeStream.write(`${indent}- ${entry.name} ${meta}\n`);
       if (fileContent && fileContent.length > 0) {
         const sanitizedContent = sanitizeCodeBlockDelimiters(fileContent);
         writeStream.write(
@@ -156,4 +159,26 @@ export function countFilesAndDirectories(
   count(dirPath);
 
   return { directories: directoriesCount, files: filesCount };
+}
+
+// Human-readable size formatting (bytes to KB/MB/GB)
+export function formatSize(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  const kb = bytes / 1024;
+  if (kb < 1024) return `${kb.toFixed(kb < 10 ? 2 : 1)} KB`;
+  const mb = kb / 1024;
+  if (mb < 1024) return `${mb.toFixed(mb < 10 ? 2 : 1)} MB`;
+  const gb = mb / 1024;
+  return `${gb.toFixed(gb < 10 ? 2 : 1)} GB`;
+}
+
+// Lightweight token estimate without heavy deps
+// Approximate: ~4 chars per token for ASCII code. Fallback by splitting on whitespace and punctuation
+export function estimateTokensFromText(text) {
+  if (!text) return 0;
+  // Use a heuristic combining char length and word count
+  const byChars = Math.round(text.length / 4);
+  const byWords = Math.round((text.match(/\S+/g) || []).length * 1.3);
+  // Return an average to smooth extremes
+  return Math.max(1, Math.round((byChars + byWords) / 2));
 }
